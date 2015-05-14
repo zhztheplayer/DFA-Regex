@@ -36,7 +36,7 @@ public class RegexMatcherTest {
     public void testUUID() {
         String regex = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";
         String str = UUID.randomUUID().toString();
-        int num = 10000000;
+        int num = 100000;
 
         testSpeed(regex, num, str);
     }
@@ -45,7 +45,7 @@ public class RegexMatcherTest {
     public void testAddress() {
         String regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
         String str = "192.168.0.255";
-        int num = 10000000;
+        int num = 100000;
 
         testSpeed(regex, num, str);
     }
@@ -54,7 +54,7 @@ public class RegexMatcherTest {
     public void testLog() {
         String regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3} - - \\[[^\\]]+\\] \"[^\"]+\" \\d+ \\d+ \"[^\"]+\" \"[^\"]+\"";
         String str = "11.11.11.11 - - [25/Jan/2000:14:00:01 +0100] \"GET /1986.js HTTP/1.1\" 200 932 \"http://domain.com/index.html\" \"Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 GTB6\"";
-        int num = 10000000;
+        int num = 100000;
 
         testSpeed(regex, num, str);
     }
