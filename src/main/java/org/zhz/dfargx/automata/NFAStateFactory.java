@@ -1,10 +1,5 @@
 package org.zhz.dfargx.automata;
 
-import org.zhz.dfargx.util.CommonSets;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created on 2015/5/10.
  */

@@ -1,6 +1,5 @@
 package org.zhz.dfargx.stack;
 
-import org.zhz.dfargx.tree.node.BMany;
 import org.zhz.dfargx.tree.node.BranchNode;
 import org.zhz.dfargx.tree.node.LeafNode;
 import org.zhz.dfargx.tree.node.Node;

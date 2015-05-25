@@ -8,7 +8,6 @@ import org.zhz.dfargx.automata.NFA;
 import org.zhz.dfargx.tree.SyntaxTree;
 import org.zhz.dfargx.tree.node.Node;
 
-import java.util.Iterator;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
