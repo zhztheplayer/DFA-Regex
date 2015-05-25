@@ -8,10 +8,10 @@ import org.zhz.dfargx.tree.SyntaxTree;
  * Created on 2015/5/11.
  */
 public class RegexMatcher {
-    int[][] transitionTable;
-    int is; // init state
-    int rs; // reject state
-    boolean[] fs; // final states
+    private int[][] transitionTable;
+    private int is;
+    private int rs;
+    private boolean[] fs;
 
     public RegexMatcher(String regex) {
         compile(regex);
@@ -22,9 +22,9 @@ public class RegexMatcher {
         NFA nfa = new NFA(syntaxTree.getRoot());
         DFA dfa = new DFA(nfa.getStateList());
         transitionTable = dfa.getTransitionTable();
-        is = dfa.getIs();
-        fs = dfa.getFs();
-        rs = dfa.getRs();
+        is = dfa.getInitState();
+        fs = dfa.getFinalStates();
+        rs = dfa.getRejectedState();
     }
 
     public boolean match(String str) {
@@ -33,7 +33,7 @@ public class RegexMatcher {
             char ch = str.charAt(i);
             s = transitionTable[s][ch];
             if (s == rs) {
-                return false; // fast failed using reject state
+                return false; // fast failed using rejected state
             }
         }
         return fs[s];

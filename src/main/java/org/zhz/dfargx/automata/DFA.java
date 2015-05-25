@@ -11,7 +11,7 @@ public class DFA {
 
     private int[][] transitionTable;
     private int is; // init state
-    private int rs; // reject state
+    private int rs; // rejected state
     private boolean[] fs; // final states
 
     public DFA(List<NFAState> nfaStateList) {
@@ -25,15 +25,15 @@ public class DFA {
         return transitionTable;
     }
 
-    public int getRs() {
+    public int getRejectedState() {
         return rs;
     }
 
-    public int getIs() {
+    public int getInitState() {
         return is;
     }
 
-    public boolean[] getFs() {
+    public boolean[] getFinalStates() {
         return fs;
     }
 
@@ -134,7 +134,7 @@ public class DFA {
             stateRenamingMap.put(nfaState, renamingStateID++);
         }
 
-        renamedDFATransitionTable.put(0, newRejectState()); // the reject state 0
+        renamedDFATransitionTable.put(0, newRejectState()); // the rejected state 0
         finalFlags.put(0, false);
 
         // construct renamed dfa transition table
@@ -200,7 +200,7 @@ public class DFA {
         // determine initial group state
         is = groupFlags.get(initStateAfterRenaming);
 
-        // determine reject group state
+        // determine rejected group state
         rs = groupFlags.get(0);
 
         // determine final group states

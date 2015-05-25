@@ -1,11 +1,14 @@
 import org.junit.Assert;
 import org.junit.Test;
+import org.zhz.dfargx.MatchedText;
 import org.zhz.dfargx.RegexMatcher;
+import org.zhz.dfargx.RegexSearcher;
 import org.zhz.dfargx.automata.DFA;
 import org.zhz.dfargx.automata.NFA;
 import org.zhz.dfargx.tree.SyntaxTree;
 import org.zhz.dfargx.tree.node.Node;
 
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * Created on 5/6/15.
  */
-public class RegexMatcherTest {
+public class RegexTest {
 
     //"([ab]([^cd]*\\w+(abc|abcd){2,5})+)?.*"
     @Test
@@ -38,7 +41,7 @@ public class RegexMatcherTest {
         String str = UUID.randomUUID().toString();
         int num = 100000;
 
-        testSpeed(regex, num, str);
+        testMatchingSpeed(regex, str, num);
     }
 
     @Test
@@ -47,7 +50,7 @@ public class RegexMatcherTest {
         String str = "192.168.0.255";
         int num = 100000;
 
-        testSpeed(regex, num, str);
+        testMatchingSpeed(regex, str, num);
     }
 
     @Test
@@ -56,10 +59,19 @@ public class RegexMatcherTest {
         String str = "11.11.11.11 - - [25/Jan/2000:14:00:01 +0100] \"GET /1986.js HTTP/1.1\" 200 932 \"http://domain.com/index.html\" \"Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 GTB6\"";
         int num = 100000;
 
-        testSpeed(regex, num, str);
+        testMatchingSpeed(regex, str, num);
     }
 
-    private void testSpeed(String regex, int num, String str) {
+    @Test
+    public void testEmail() {
+        String regex = "\\[\\w+@[\\w\\.]+\\]";
+        String str = "[Tom@yahoo.com] sends an email to [Lucy@gmail.com] and [Mike@hotmail.com][John@hotmail.com]";
+        int num = 100000;
+
+        testSearchingSpeed(regex, str, num);
+    }
+
+    private void testMatchingSpeed(String regex, String str, int num) {
         System.out.println("Matching " + num + " strings using: ");
         System.out.println("[Pattern] " + regex);
         System.out.println("[String]" + str);
@@ -87,5 +99,28 @@ public class RegexMatcherTest {
         System.out.println(jpResult);
         System.out.println();
         Assert.assertTrue(dfaResult == jpResult);
+    }
+
+    private void testSearchingSpeed(String regex, String str, int num) {
+        long pre = System.currentTimeMillis();
+        RegexSearcher searcher = new RegexSearcher(regex);
+        for (int i = 0; i < num; i++) {
+            searcher.search(str);
+            for (MatchedText text : searcher) {
+                text.getText();
+                text.getPos();
+            }
+        }
+        System.out.println("DFA matcher Cost " + (System.currentTimeMillis() - pre) + " ms to do searching");
+        pre = System.currentTimeMillis();
+        Pattern pattern = Pattern.compile(regex);
+        for (int i = 0; i < num; i++) {
+            Matcher matcher = pattern.matcher(str);
+            while (matcher.find()) {
+                matcher.group();
+                matcher.start();
+            }
+        }
+        System.out.println("Java pattern Cost " + (System.currentTimeMillis() - pre) + " ms to do searching");
     }
 }

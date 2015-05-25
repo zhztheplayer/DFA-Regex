@@ -24,6 +24,7 @@ test using pattern: \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - - \[[^\]]+\] "[^"]+" \d
 By the way, DFA engine has it own special way in compiling part, you can just write regex and use all tokens whatever you want without caring about the performance. Because the performances are always the same to different regexes under a DFA engine.
 ### These features are allowed now:
 - matching
+- searching
 - ascii charactor set
 - *, +, ?, {x}, {x,y}, {x}
 - ., \w, \W, \s, \S, \d, \D
@@ -37,7 +38,6 @@ By the way, DFA engine has it own special way in compiling part, you can just wr
 - some zero width tokens, such as "\b";
 
 ### These features may be supported in later versions:
-- searching
 - look forward, such as "(?=)";
 - anchor points "^", "$";
 - range set such as "[0 - 9]"
