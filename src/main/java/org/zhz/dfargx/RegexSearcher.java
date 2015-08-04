@@ -4,17 +4,21 @@ import org.zhz.dfargx.automata.DFA;
 import org.zhz.dfargx.automata.NFA;
 import org.zhz.dfargx.tree.SyntaxTree;
 
+import java.util.Enumeration;
 import java.util.Iterator;
 
 /**
  * Created on 5/25/15.
  */
-public class RegexSearcher implements Iterable<MatchedText>{
+public class RegexSearcher implements Enumeration<MatchedText> {
     private int[][] transitionTable;
     private int is;
     private int rs;
     private boolean[] fs;
     private String str;
+
+    private int startPos;
+    private MatchedText text;
 
     public RegexSearcher(String regex) {
         compile(regex);
@@ -32,59 +36,33 @@ public class RegexSearcher implements Iterable<MatchedText>{
     }
 
     public void search(String str) {
+        startPos = 0;
+        text = null;
         this.str = str;
     }
 
     @Override
-    public Iterator<MatchedText> iterator() {
-        if (str == null) {
-            throw new UnsupportedOperationException();
+    public boolean hasMoreElements() {
+        while (startPos < str.length()) {
+            int s = is;
+            for (int i = startPos; i < str.length(); i++) {
+                char ch = str.charAt(i);
+                s = transitionTable[s][ch];
+                if (s == rs) {
+                    break;
+                } else if (fs[s]) {
+                    text = new MatchedText(str.substring(startPos, i + 1), startPos);
+                    startPos = i + 1;
+                    return true;
+                }
+            }
+            startPos++;
         }
-        return new Itr();
+        return false;
     }
 
-    private class Itr implements Iterator<MatchedText> {
-        private int startPos;
-        private MatchedText text;
-
-        public Itr() {
-            startPos = 0;
-            text = null;
-        }
-
-        @Override
-        public boolean hasNext() {
-            while (startPos < str.length()) {
-                int s = is;
-                for (int i = startPos; i < str.length(); i++) {
-                    char ch = str.charAt(i);
-                    int ls = s; // last state
-                    s = transitionTable[s][ch];
-                    if (s == rs) {
-                        if (fs[ls]) {
-                            text = new MatchedText(str.substring(startPos, i), startPos);
-                            startPos = i;
-                            return true;
-                        } else break;
-                    } else if (fs[s] && i == str.length() - 1 ) {
-                        text = new MatchedText(str.substring(startPos, str.length()), startPos);
-                        startPos = str.length();
-                        return true;
-                    }
-                }
-                startPos++;
-            }
-            return false;
-        }
-
-        @Override
-        public MatchedText next() {
-            return text;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
+    @Override
+    public MatchedText nextElement() {
+        return text;
     }
 }

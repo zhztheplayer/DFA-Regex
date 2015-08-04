@@ -105,7 +105,8 @@ public class RegexTest {
         RegexSearcher searcher = new RegexSearcher(regex);
         for (int i = 0; i < num; i++) {
             searcher.search(str);
-            for (MatchedText text : searcher) {
+            while (searcher.hasMoreElements()) {
+                MatchedText text = searcher.nextElement();
                 text.getText();
                 text.getPos();
             }
