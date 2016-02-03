@@ -2,6 +2,15 @@
 
 A pretty fast regex engine built for java using pure DFA.
 
+### Pom Settings
+```xml
+<dependency>
+    <groupId>top.yatt.dfargx</groupId>
+    <artifactId>dfargx</artifactId>
+    <version>0.2</version>
+</dependency>
+```
+
 ### That is probably why you need this lib:
 
 - You have just few regexes but a huge number or even infinite texts to match;
