@@ -66,26 +66,33 @@ public class DFA {
     }
 
     private void constructOriginalDFA(Set<NFAState> stateSet, Map<NFAState, Map<Character, Set<NFAState>>> nfaTransitionMap, Map<Set<NFAState>, Map<Character, Set<NFAState>>> originalDFATransitionMap) {
-        Map<Character, Set<NFAState>> subMap = originalDFATransitionMap.get(stateSet);
-        if (subMap == null) {
-            subMap = new HashMap<>();
-            originalDFATransitionMap.put(stateSet, subMap);
-        }
-        for (char ch = 0; ch < CommonSets.ENCODING_LENGTH; ch++) {
-            Set<NFAState> union = new HashSet<>();
-            for (NFAState state : stateSet) {
-                Set<NFAState> nfaSet = nfaTransitionMap.get(state).get(ch);
-                if (nfaSet != null) {
-                    union.addAll(nfaSet);
+
+        Stack<Set<NFAState>> stack = new Stack<>();
+        stack.push(stateSet);
+
+        do {
+            Set<NFAState> pop = stack.pop();
+            Map<Character, Set<NFAState>> subMap = originalDFATransitionMap.get(pop);
+            if (subMap == null) {
+                subMap = new HashMap<>();
+                originalDFATransitionMap.put(pop, subMap);
+            }
+            for (char ch = 0; ch < CommonSets.ENCODING_LENGTH; ch++) {
+                Set<NFAState> union = new HashSet<>();
+                for (NFAState state : pop) {
+                    Set<NFAState> nfaSet = nfaTransitionMap.get(state).get(ch);
+                    if (nfaSet != null) {
+                        union.addAll(nfaSet);
+                    }
+                }
+                if (!union.isEmpty()) {
+                    subMap.put(ch, union);
+                    if (!originalDFATransitionMap.containsKey(union)) {
+                        stack.push(union);
+                    }
                 }
             }
-            if (!union.isEmpty()) {
-                subMap.put(ch, union);
-                if (!originalDFATransitionMap.containsKey(union)) {
-                    constructOriginalDFA(union, nfaTransitionMap, originalDFATransitionMap);
-                }
-            }
-        }
+        } while (!stack.isEmpty());
     }
 
     private Map<NFAState, Set<NFAState>> calculateClosure(List<NFAState> nfaStateList) {
@@ -99,10 +106,17 @@ public class DFA {
     }
 
     private void dfsClosure(NFAState state, Set<NFAState> closure) {
-        closure.add(state);
-        for (NFAState next : state.getDirectTable()) {
-            dfsClosure(next, closure);
-        }
+        Stack<NFAState> nfaStack = new Stack<>();
+        nfaStack.push(state);
+        do {
+            NFAState pop = nfaStack.pop();
+            closure.add(pop);
+            for (NFAState next : pop.getDirectTable()) {
+                if (!closure.contains(next)) {
+                    nfaStack.push(next);
+                }
+            }
+        } while (!nfaStack.isEmpty());
     }
 
     private Set<NFAState> traceReachable(Set<NFAState> closure, char ch, Map<NFAState, Set<NFAState>> closureMap) {
