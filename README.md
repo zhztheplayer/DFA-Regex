@@ -1,4 +1,4 @@
-# DFA-Regex
+# DFA-Regex ![](https://travis-ci.org/zbdzzg/DFA-Regex.svg?branch=master)
 
 A DFA regex engine in java.
 
