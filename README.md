@@ -42,9 +42,13 @@ Regex | Input | Time Cost (Java Native) | Time Cost (DFA Regex)
 - escape characters
 - brackets
 
-### Features Not Allowed Yet:
+### Todo List:
 - capture groups `(<name>)`
 - some zero width tokens `\b`
 - look forward / look back `(?=)` `(?<)`
 - anchor points `^` `$`
 - ranged set `[0-9]`
+
+
+
+*Be free to file issues or promote unsupported features that you want to see to make this project better.*
