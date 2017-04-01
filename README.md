@@ -42,9 +42,6 @@ Regex | Input | Time Cost (Java Native) | Time Cost (DFA Regex)
 - escape characters
 - brackets
 
-### Features Not Allowed Yet:
-- capture groups `(<name>)`
-- some zero width tokens `\b`
-- look forward / look back `(?=)` `(?<)`
-- anchor points `^` `$`
-- ranged set `[0-9]`
+### Todo List:
+- [POSIX-Extended Regex](http://www.boost.org/doc/libs/1_44_0/libs/regex/doc/html/boost_regex/syntax/basic_extended.html) syntax support
+- Liner time searching
