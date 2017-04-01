@@ -10,8 +10,8 @@
     <packaging>jar</packaging>
 
     <name>DFA-Regex</name>
-    <url>https://github.com/zbdzzg/DFA-Regex</url>
-    <description>A pretty fast regex engine built in java using pure DFA.</description>
+    <url>https://github.com/zhztheplayer/DFA-Regex</url>
+    <description>A Java DFA regex engine implementation.</description>
     <inceptionYear>2015</inceptionYear>
 
     <distributionManagement>
@@ -44,9 +44,9 @@
 
     <developers>
         <developer>
-            <id>zbdzzg</id>
+            <id>zhz</id>
             <name>Zhang Hongze</name>
-            <email>zbdzzg@sina.cn</email>
+            <email>talktozhz@126.com</email>
         </developer>
     </developers>
 
