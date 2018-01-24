@@ -6,7 +6,7 @@
 
     <groupId>top.yatt.dfargx</groupId>
     <artifactId>dfargx</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>DFA-Regex</name>
@@ -36,9 +36,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:zbdzzg/DFA-Regex.git</connection>
-        <developerConnection>scm:git:git@github.com:zbdzzg/DFA-Regex.git</developerConnection>
-        <url>https://github.com/zbdzzg/DFA-Regex</url>
+        <connection>scm:git:git@github.com:zhztheplayer/DFA-Regex.git</connection>
+        <developerConnection>scm:git:git@github.com:zhztheplayer/DFA-Regex.git</developerConnection>
+        <url>https://github.com/zhztheplayer/DFA-Regex</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -52,7 +52,7 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/zbdzzg/DFA-Regex/issues</url>
+        <url>https://github.com/zhztheplayer/DFA-Regex/issues</url>
     </issueManagement>
     <profiles>
         <profile>
@@ -120,7 +120,37 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>verify-style</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>
+                            ${project.build.sourceDirectory}
+                        </sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
+                <dependencies>
+                    <!-- https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle -->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 

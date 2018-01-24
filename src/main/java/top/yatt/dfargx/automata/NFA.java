@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Stack;
 
 /**
+ * Only able to accept wfs accessing order, the class constructs a NFA by iterating the input syntax tree recursively
+ * from the root node.
+ *
  * Created on 2015/5/10.
  */
-public class NFA { // only able to accept wfs accessing order, this class construct a NFA with iterate the syntax tree recursively from the root node.
+public class NFA {
 
-    private Stack<NFAState> stateStack;
-    private NFAStateFactory stateFactory;
-    private List<NFAState> stateList;
+    private final Stack<NFAState> stateStack;
+    private final NFAStateFactory stateFactory;
+    private final List<NFAState> stateList;
 
     public NFA(Node root) {
         stateList = new ArrayList<>();

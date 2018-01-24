@@ -1,15 +1,12 @@
 import org.junit.Assert;
 import org.junit.Test;
-import top.yatt.dfargx.MatchedText;
 import top.yatt.dfargx.RegexMatcher;
-import top.yatt.dfargx.RegexSearcher;
 import top.yatt.dfargx.automata.DFA;
 import top.yatt.dfargx.automata.NFA;
 import top.yatt.dfargx.tree.SyntaxTree;
 import top.yatt.dfargx.tree.node.Node;
 
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -20,7 +17,7 @@ public class RegexTest {
     //"([ab]([^cd]*\\w+(abc|abcd){2,5})+)?.*"
     @Test
     public void testProcessing() {
-        long pre = System.currentTimeMillis();
+        final long pre = System.currentTimeMillis();
         String regex = "(a*b|ab*)";
         SyntaxTree tree = new SyntaxTree(regex);
         Node root = tree.getRoot();
@@ -69,7 +66,7 @@ public class RegexTest {
     public void testFor(String regex, String str) {
         long prev;
         prev = System.currentTimeMillis();
-        boolean expected = Pattern.compile(regex).matcher(str).matches();
+        final boolean expected = Pattern.compile(regex).matcher(str).matches();
         System.out.println(System.currentTimeMillis() - prev);
         prev = System.currentTimeMillis();
         boolean actual = new RegexMatcher(regex).match(str);

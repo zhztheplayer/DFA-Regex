@@ -39,8 +39,12 @@ public class TreePrinter {
                             System.out.print(' ');
                         } else if (i == width / 2) {
                             System.out.print('|');
-                        } else System.out.print('-');
-                    } else System.out.print(' ');
+                        } else {
+                            System.out.print('-');
+                        }
+                    } else {
+                        System.out.print(' ');
+                    }
                 }
                 System.out.print(s);
                 for (int i = s.length(); i < width; i++) {
@@ -49,8 +53,12 @@ public class TreePrinter {
                             System.out.print('-');
                         } else if (i == width / 2 && t != h) {
                             System.out.print('|');
-                        } else System.out.print(' ');
-                    } else System.out.print(' ');
+                        } else {
+                            System.out.print(' ');
+                        }
+                    } else {
+                        System.out.print(' ');
+                    }
                 }
             }
             if (++j == Math.pow(2, t) - 1) {
@@ -79,16 +87,17 @@ public class TreePrinter {
         }
     }
 
-    private int calculateDepth(Node node, int depth) {
-        depth += 1;
-        int l = depth, r = depth;
+    private int calculateDepth(Node node, final int depth) {
+        int td = depth + 1;
+        int l = td;
+        int r = td;
         if (node.hasLeft()) {
-            l = calculateDepth(node.left(), depth);
+            l = calculateDepth(node.left(), td);
         }
         if (node.hasRight()) {
-            r = calculateDepth(node.right(), depth);
+            r = calculateDepth(node.right(), td);
         }
-        return l > r ? l : r > depth ? r : depth;
+        return l > r ? l : r > td ? r : td;
     }
 
     private Node copyTree(Node root) {
