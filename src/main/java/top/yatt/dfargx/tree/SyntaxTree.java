@@ -2,11 +2,11 @@ package top.yatt.dfargx.tree;
 
 import top.yatt.dfargx.stack.OperatingStack;
 import top.yatt.dfargx.stack.ShuntingStack;
+import top.yatt.dfargx.tree.node.*;
 import top.yatt.dfargx.tree.node.bracket.LeftBracket;
 import top.yatt.dfargx.tree.node.bracket.RightBracket;
 import top.yatt.dfargx.util.CommonSets;
 import top.yatt.dfargx.util.InvalidSyntaxException;
-import top.yatt.dfargx.tree.node.*;
 
 import java.util.*;
 
@@ -69,17 +69,23 @@ public class SyntaxTree {
                     if (regex.charAt(index) == '^') {
                         isComplementarySet = true;
                         index++;
-                    } else isComplementarySet = false;
+                    } else {
+                        isComplementarySet = false;
+                    }
                     for (char next = regex.charAt(index++); next != ']'; next = regex.charAt(index++)) {
                         if (next == '\\' || next == '.') {
                             String token;
                             if (next == '\\') {
                                 char nextNext = regex.charAt(index++);
                                 token = new String(new char[]{next, nextNext});
-                            } else token = String.valueOf(next);
+                            } else {
+                                token = String.valueOf(next);
+                            }
                             List<Character> tokenSet = CommonSets.interpretToken(token);
                             all.addAll(tokenSet);
-                        } else all.add(next);
+                        } else {
+                            all.add(next);
+                        }
                     }
                     char[] chSet = CommonSets.minimum(CommonSets.listToArray(all));
                     if (isComplementarySet) {
@@ -88,7 +94,9 @@ public class SyntaxTree {
                     nodeList.add(new LeftBracket());
                     for (int i = 0; i < chSet.length; i++) {
                         nodeList.add(new LChar(chSet[i]));
-                        if (i == chSet.length - 1 || chSet[i + 1] == 0) break;
+                        if (i == chSet.length - 1 || chSet[i + 1] == 0) {
+                            break;
+                        }
                         nodeList.add(new BOr());
                     }
                     nodeList.add(new RightBracket());
@@ -123,7 +131,9 @@ public class SyntaxTree {
                                 most = Integer.parseInt(sb.toString());
                             }
                         }
-                    } else most = least;
+                    } else {
+                        most = least;
+                    }
 
                     performMany(least, most);
                     itemTerminated = true;
@@ -167,7 +177,9 @@ public class SyntaxTree {
                         if (ch == '\\') {
                             char next = regex.charAt(index++);
                             token = new String(new char[]{ch, next});
-                        } else token = String.valueOf(ch);
+                        } else {
+                            token = String.valueOf(ch);
+                        }
                         List<Character> tokenSet = CommonSets.interpretToken(token);
                         nodeList.add(new LeftBracket());
                         nodeList.add(new LChar(tokenSet.get(0)));
@@ -176,7 +188,9 @@ public class SyntaxTree {
                             nodeList.add(new LChar(tokenSet.get(i)));
                         }
                         nodeList.add(new RightBracket());
-                    } else nodeList.add(new LChar(ch));
+                    } else {
+                        nodeList.add(new LChar(ch));
+                    }
 
                     itemTerminated = true;
                     break;
@@ -209,7 +223,9 @@ public class SyntaxTree {
                             break;
                         }
                     }
-                } else sample = Collections.singletonList(nodeList.remove(nodeList.size() - 1));
+                } else {
+                    sample = Collections.singletonList(nodeList.remove(nodeList.size() - 1));
+                }
 
                 if (most == -1) {
                     for (int i = 0; i < least; i++) {

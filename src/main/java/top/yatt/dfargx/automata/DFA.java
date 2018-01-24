@@ -10,9 +10,12 @@ import java.util.*;
 public class DFA {
 
     private int[][] transitionTable;
-    private int is; // init state
-    private int rs; // rejected state
-    private boolean[] fs; // final states
+    // init state
+    private int is;
+    // rejected state
+    private int rs;
+    // final states
+    private boolean[] fs;
 
     public DFA(List<NFAState> nfaStateList) {
         transitionTable = null;
@@ -143,7 +146,7 @@ public class DFA {
         // rename all states
         for (Set<NFAState> nfaState : oriDFATransitionMap.keySet()) {
             if (initStateAfterRenaming == -1 && nfaState.equals(initClosure)) {
-                initStateAfterRenaming = renamingStateID; // record init state id
+                initStateAfterRenaming = renamingStateID; // preserve init state id
             }
             stateRenamingMap.put(nfaState, renamingStateID++);
         }
@@ -161,15 +164,20 @@ public class DFA {
             renamedDFATransitionTable.put(renamingStateID, state);
             if (entry.getKey().contains(finalNFAState)) {
                 finalFlags.put(renamingStateID, true);
-            } else finalFlags.put(renamingStateID, false);
+            } else {
+                finalFlags.put(renamingStateID, false);
+            }
         }
 
-        // split states to final states and non-final states
+        // group states to final states and non-final states
         Map<Integer, Integer> groupFlags = new HashMap<>();
         for (int i = 0; i < finalFlags.size(); i++) {
             boolean b = finalFlags.get(i);
-            if (b) groupFlags.put(i, 0);
-            else groupFlags.put(i, 1);
+            if (b) {
+                groupFlags.put(i, 0);
+            } else {
+                groupFlags.put(i, 1);
+            }
         }
 
         int groupTotal = 2;
@@ -230,7 +238,7 @@ public class DFA {
             fs[i] = finalGroupFlags.contains(i);
         }
 
-        // construct the final transition table
+        // construct the output transition table
         transitionTable = new int[groupTotal][];
 
         for (int groupID = 0; groupID < groupTotal; groupID++) {
