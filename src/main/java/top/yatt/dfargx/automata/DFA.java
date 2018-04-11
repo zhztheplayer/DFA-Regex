@@ -40,6 +40,33 @@ public class DFA {
         return fs;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DFA)) {
+            return false;
+        }
+        DFA other = (DFA) o;
+        if (other.is == this.is && other.rs == this.rs) {
+            if (other.fs.length != this.fs.length) {
+                return false;
+            }
+            for (int i = 0; i < other.fs.length; i++) {
+                if (other.fs[i] != this.fs[i]) {
+                    return false;
+                }
+            }
+            for (int i = 0; i < other.transitionTable.length; i++) {
+                for (int j = 0; j < other.transitionTable[i].length; j++) {
+                    if (other.transitionTable[i][j] != this.transitionTable[i][j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     private void convert(List<NFAState> nfaStateList) {
         NFAState initState = nfaStateList.get(0);
         NFAState finalState = nfaStateList.get(1);
