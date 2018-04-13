@@ -53,9 +53,9 @@ public class DFA {
 
     private boolean dfaEquivalenceCheck(DFA other, int initialState, int otherInitialState, int [][] checked) {
         // transitions for this DFA for state initialState
-        int initialTransitions[] = transitionTable[initialState];
+        int [] initialTransitions = transitionTable[initialState];
         // transitions for the other DFA for state otherInitialState
-        int otherInitialTransitions[] = other.transitionTable[otherInitialState];
+        int [] otherInitialTransitions = other.transitionTable[otherInitialState];
 
         // For every possible transition from initialState (and otherInitialState)
         for (int i = 0; i < initialTransitions.length; i++) {
