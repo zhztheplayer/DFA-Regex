@@ -7,9 +7,9 @@ import top.yatt.dfargx.tree.SyntaxTree;
 public class RegexComparator {
 
     /**
-     * Checks if the matching space of <code>regexp2</code> is contained by the matching space of <code>regexp1</code>.
+     * Checks if the matching space of <code>regexp1</code> contains the matching space of <code>regexp1</code>.
      */
-    public static final boolean isContained(String regexp1, String regexp2) {
+    public static final boolean contains(String regexp1, String regexp2) {
         SyntaxTree syntaxTree = new SyntaxTree(regexp1);
         NFA nfa = new NFA(syntaxTree.getRoot());
         DFA dfa = new DFA(nfa.getStateList());

@@ -46,25 +46,44 @@ public class DFA {
             return false;
         }
         DFA other = (DFA) o;
-        if (other.is == this.is && other.rs == this.rs) {
-            if (other.fs.length != this.fs.length) {
-                return false;
+
+        int [][] checked = new int[transitionTable.length][other.transitionTable.length];
+        return dfaEquivalenceCheck(other, is, other.is, checked);
+    }
+
+    private boolean dfaEquivalenceCheck(DFA other, int initialState, int otherInitialState, int [][] checked) {
+        // transitions for this DFA for state initialState
+        int initialTransitions[] = transitionTable[initialState];
+        // transitions for the other DFA for state otherInitialState
+        int otherInitialTransitions[] = other.transitionTable[otherInitialState];
+
+        // For every possible transition from initialState (and otherInitialState)
+        for (int i = 0; i < initialTransitions.length; i++) {
+
+            // if the target state is already computed in previous iterations, skip
+            if (checked[initialTransitions[i]][otherInitialTransitions[i]] == 1) {
+                continue;
             }
-            for (int i = 0; i < other.fs.length; i++) {
-                if (other.fs[i] != this.fs[i]) {
+            // mark the transition as computed
+            checked[initialTransitions[i]][otherInitialTransitions[i]] = 1;
+
+            if (fs[initialTransitions[i]] != other.fs[otherInitialTransitions[i]]) {
+                // one transition goes to a final state and the other does not, this DFA is not equivalent
+                return false;
+            } else if ((initialTransitions[i] == rs && otherInitialTransitions[i] != other.rs)
+                    || (initialTransitions[i] != rs && otherInitialTransitions[i] == other.rs)) {
+                // one transition goes to rejected state and the other does not, this DFA is not equivalent
+                return false;
+            } else if (fs[initialTransitions[i]] == false && other.fs[otherInitialTransitions[i]] == false) {
+                // both transitions go to intermediate states, needs further computing using current states as initial
+                if (!dfaEquivalenceCheck(other, initialTransitions[i], otherInitialTransitions[i], checked)) {
+                    // the transition is not equivalent further down, this DFA is not equivalent
                     return false;
                 }
             }
-            for (int i = 0; i < other.transitionTable.length; i++) {
-                for (int j = 0; j < other.transitionTable[i].length; j++) {
-                    if (other.transitionTable[i][j] != this.transitionTable[i][j]) {
-                        return false;
-                    }
-                }
-            }
-            return true;
         }
-        return false;
+        // All transitions check were equivalent, this DFA is equivalent
+        return true;
     }
 
     private void convert(List<NFAState> nfaStateList) {
