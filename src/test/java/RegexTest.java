@@ -63,10 +63,18 @@ public class RegexTest {
         testFor(regex, str);
     }
 
+    private static String repeat(String str, int count) {
+        StringBuilder result = new StringBuilder(str.length() * count);
+        for (int i = 0; i < count; i++) {
+            result.append(str);
+        }
+        return result.toString;
+    }
+    
     @Test
     public void testRepetition() {
-        String regex = "a?".repeat(30) + "a".repeat(30);
-        String str = "a".repeat(30);
+        String regex = repeat("a?", 30) + repeat("a", 30);
+        String str = repeat("a", 30);
         
         testFor(regex, str);
     }
