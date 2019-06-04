@@ -63,6 +63,14 @@ public class RegexTest {
         testFor(regex, str);
     }
 
+    @Test
+    public void testRepetition() {
+        String regex = "a?".repeat(30) + "a".repeat(30);
+        String str = "a".repeat(30);
+        
+        testFor(regex, str);
+    }
+
     public void testFor(String regex, String str) {
         long prev;
         prev = System.currentTimeMillis();
