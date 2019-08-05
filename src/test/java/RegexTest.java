@@ -68,7 +68,7 @@ public class RegexTest {
         for (int i = 0; i < count; i++) {
             result.append(str);
         }
-        return result.toString;
+        return result.toString();
     }
     
     @Test
