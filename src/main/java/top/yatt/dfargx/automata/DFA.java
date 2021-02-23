@@ -9,19 +9,20 @@ import java.util.*;
  */
 public class DFA {
 
+    private final NFAIStateManager nfaiStateManager;
+    private final List<NFAIState> nfaiStates;
     private int[][] transitionTable;
-    // init state
-    private int is;
-    // rejected state
-    private int rs;
-    // final states
-    private boolean[] fs;
+    private int is; // init state
+    private int rs; // rejected state
+    private boolean[] fs; // final states
 
-    public DFA(List<NFAState> nfaStateList) {
+    public DFA(NFAIStateManager nfaiStateManager) {
+        this.nfaiStateManager = nfaiStateManager;
+        this.nfaiStates = nfaiStateManager.getStates();
         transitionTable = null;
         is = rs = -1;
         fs = null;
-        convert(nfaStateList);
+        init();
     }
 
     public int[][] getTransitionTable() {
@@ -40,13 +41,7 @@ public class DFA {
         return fs;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof DFA)) {
-            return false;
-        }
-        DFA other = (DFA) o;
-
+    public boolean isEquivalentTo(DFA other) {
         int [][] checked = new int[transitionTable.length][other.transitionTable.length];
         return dfaEquivalenceCheck(other, is, other.is, checked);
     }
@@ -86,19 +81,19 @@ public class DFA {
         return true;
     }
 
-    private void convert(List<NFAState> nfaStateList) {
-        NFAState initState = nfaStateList.get(0);
-        NFAState finalState = nfaStateList.get(1);
+    private void init() {
+        NFAIState initState = nfaiStates.get(0);
+        NFAIState finalState = nfaiStates.get(1);
 
-        Map<NFAState, Set<NFAState>> closureMap = calculateClosure(nfaStateList);
+        Map<NFAIState, NFAIStatePack> closureMap = calculateClosure(nfaiStates);
 
         // construct a NFA first
-        Map<NFAState, Map<Character, Set<NFAState>>> nfaTransitionMap = new HashMap<>();
-        for (NFAState state : nfaStateList) {
-            Map<Character, Set<NFAState>> subMap = new HashMap<>();
+        Map<NFAIState, Map<Character, NFAIStatePack>> nfaTransitionMap = new HashMap<>();
+        for (NFAIState state : nfaiStates) {
+            Map<Character, NFAIStatePack> subMap = new HashMap<>();
             for (char ch = 0; ch < CommonSets.ENCODING_LENGTH; ch++) {
-                Set<NFAState> closure = closureMap.get(state);
-                Set<NFAState> reachable = traceReachable(closure, ch, closureMap);
+                NFAIStatePack closure = closureMap.get(state);
+                NFAIStatePack reachable = traceReachable(closure, ch, closureMap);
                 if (!reachable.isEmpty()) {
                     subMap.put(ch, reachable);
                 }
@@ -107,29 +102,29 @@ public class DFA {
         }
 
         // Construct an original DFA using the constructed NFA. Each key which is set of nfa states is a new dfa state.
-        Map<Set<NFAState>, Map<Character, Set<NFAState>>> originalDFATransitionMap = new HashMap<>();
+        Map<NFAIStatePack, Map<Character, NFAIStatePack>> originalDFATransitionMap = new HashMap<>();
         constructOriginalDFA(closureMap.get(initState), nfaTransitionMap, originalDFATransitionMap);
 
         // construct minimum DFA
         minimize(originalDFATransitionMap, closureMap.get(initState), finalState);
     }
 
-    private void constructOriginalDFA(Set<NFAState> stateSet, Map<NFAState, Map<Character, Set<NFAState>>> nfaTransitionMap, Map<Set<NFAState>, Map<Character, Set<NFAState>>> originalDFATransitionMap) {
+    private void constructOriginalDFA(NFAIStatePack stateSet, Map<NFAIState, Map<Character, NFAIStatePack>> nfaTransitionMap, Map<NFAIStatePack, Map<Character, NFAIStatePack>> originalDFATransitionMap) {
 
-        Stack<Set<NFAState>> stack = new Stack<>();
+        Stack<NFAIStatePack> stack = new Stack<>();
         stack.push(stateSet);
 
         do {
-            Set<NFAState> pop = stack.pop();
-            Map<Character, Set<NFAState>> subMap = originalDFATransitionMap.get(pop);
+            NFAIStatePack pop = stack.pop();
+            Map<Character, NFAIStatePack> subMap = originalDFATransitionMap.get(pop);
             if (subMap == null) {
                 subMap = new HashMap<>();
                 originalDFATransitionMap.put(pop, subMap);
             }
             for (char ch = 0; ch < CommonSets.ENCODING_LENGTH; ch++) {
-                Set<NFAState> union = new HashSet<>();
-                for (NFAState state : pop) {
-                    Set<NFAState> nfaSet = nfaTransitionMap.get(state).get(ch);
+                NFAIStatePack union = nfaiStateManager.newEmptyPack();
+                for (NFAIState state : pop.asList()) {
+                    NFAIStatePack nfaSet = nfaTransitionMap.get(state).get(ch);
                     if (nfaSet != null) {
                         union.addAll(nfaSet);
                     }
@@ -144,37 +139,37 @@ public class DFA {
         } while (!stack.isEmpty());
     }
 
-    private Map<NFAState, Set<NFAState>> calculateClosure(List<NFAState> nfaStateList) {
-        Map<NFAState, Set<NFAState>> map = new HashMap<>();
-        for (NFAState state : nfaStateList) {
-            Set<NFAState> closure = new HashSet<>();
+    private Map<NFAIState, NFAIStatePack> calculateClosure(List<NFAIState> nfaStateList) {
+        Map<NFAIState, NFAIStatePack> map = new HashMap<>();
+        for (NFAIState state : nfaStateList) {
+            NFAIStatePack closure = nfaiStateManager.newEmptyPack();
             dfsClosure(state, closure);
             map.put(state, closure);
         }
         return map;
     }
 
-    private void dfsClosure(NFAState state, Set<NFAState> closure) {
-        Stack<NFAState> nfaStack = new Stack<>();
+    private void dfsClosure(NFAIState state, NFAIStatePack closure) {
+        Stack<NFAIState> nfaStack = new Stack<>();
         nfaStack.push(state);
         do {
-            NFAState pop = nfaStack.pop();
-            closure.add(pop);
-            for (NFAState next : pop.getDirectTable()) {
-                if (!closure.contains(next)) {
+            NFAIState pop = nfaStack.pop();
+            closure.addState(pop.getId());
+            for (NFAIState next : pop.getDirectTable().asList()) {
+                if (!closure.contains(next.getId())) {
                     nfaStack.push(next);
                 }
             }
         } while (!nfaStack.isEmpty());
     }
 
-    private Set<NFAState> traceReachable(Set<NFAState> closure, char ch, Map<NFAState, Set<NFAState>> closureMap) {
-        Set<NFAState> result = new HashSet<>();
-        for (NFAState closureState : closure) {
-            Map<Character, Set<NFAState>> transitionMap = closureState.getTransitionMap();
-            Set<NFAState> stateSet = transitionMap.get(ch);
+    private NFAIStatePack traceReachable(NFAIStatePack closure, char ch, Map<NFAIState, NFAIStatePack> closureMap) {
+        NFAIStatePack result = nfaiStateManager.newEmptyPack();;
+        for (NFAIState closureState : closure.asList()) {
+            Map<Character, NFAIStatePack> transitionMap = closureState.getTransitionMap();
+            NFAIStatePack stateSet = transitionMap.get(ch);
             if (stateSet != null) {
-                for (NFAState state : stateSet) {
+                for (NFAIState state : stateSet.asList()) {
                     result.addAll(closureMap.get(state)); // closure of all the reachable states by scanning a char of the given closure.
                 }
             }
@@ -182,15 +177,15 @@ public class DFA {
         return result;
     }
 
-    private void minimize(Map<Set<NFAState>, Map<Character, Set<NFAState>>> oriDFATransitionMap, Set<NFAState> initClosure, NFAState finalNFAState) {
+    private void minimize(Map<NFAIStatePack, Map<Character, NFAIStatePack>> oriDFATransitionMap, NFAIStatePack initClosure, NFAIState finalNFAIState) {
         Map<Integer, int[]> renamedDFATransitionTable = new HashMap<>();
         Map<Integer, Boolean> finalFlags = new HashMap<>();
-        Map<Set<NFAState>, Integer> stateRenamingMap = new HashMap<>();
+        Map<NFAIStatePack, Integer> stateRenamingMap = new HashMap<>();
         int initStateAfterRenaming = -1;
         int renamingStateID = 1;
 
         // rename all states
-        for (Set<NFAState> nfaState : oriDFATransitionMap.keySet()) {
+        for (NFAIStatePack nfaState : oriDFATransitionMap.keySet()) {
             if (initStateAfterRenaming == -1 && nfaState.equals(initClosure)) {
                 initStateAfterRenaming = renamingStateID; // preserve init state id
             }
@@ -201,14 +196,14 @@ public class DFA {
         finalFlags.put(0, false);
 
         // construct renamed dfa transition table
-        for (Map.Entry<Set<NFAState>, Map<Character, Set<NFAState>>> entry : oriDFATransitionMap.entrySet()) {
+        for (Map.Entry<NFAIStatePack, Map<Character, NFAIStatePack>> entry : oriDFATransitionMap.entrySet()) {
             renamingStateID = stateRenamingMap.get(entry.getKey());
             int[] state = newRejectedState();
-            for (Map.Entry<Character, Set<NFAState>> row : entry.getValue().entrySet()) {
+            for (Map.Entry<Character, NFAIStatePack> row : entry.getValue().entrySet()) {
                 state[row.getKey()] = stateRenamingMap.get(row.getValue());
             }
             renamedDFATransitionTable.put(renamingStateID, state);
-            if (entry.getKey().contains(finalNFAState)) {
+            if (entry.getKey().contains(finalNFAIState.getId())) {
                 finalFlags.put(renamingStateID, true);
             } else {
                 finalFlags.put(renamingStateID, false);
@@ -227,10 +222,10 @@ public class DFA {
         }
 
         int groupTotal = 2;
-        int preGroupTotal;
+        int prevGroupTotal;
         do { // splitting, group id is the final state id
-            preGroupTotal = groupTotal;
-            for (int sensitiveGroup = 0; sensitiveGroup < preGroupTotal; sensitiveGroup++) {
+            prevGroupTotal = groupTotal;
+            for (int sensitiveGroup = 0; sensitiveGroup < prevGroupTotal; sensitiveGroup++) {
                 //  <target group table, state id set>
                 Map<Map<Integer, Integer>, Set<Integer>> invertMap = new HashMap<>();
                 for (int sid = 0; sid < groupFlags.size(); sid++) { //use state id to iterate
@@ -263,7 +258,7 @@ public class DFA {
                     }
                 }
             }
-        } while (preGroupTotal != groupTotal);
+        } while (prevGroupTotal != groupTotal);
 
         // determine initial group state
         is = groupFlags.get(initStateAfterRenaming);

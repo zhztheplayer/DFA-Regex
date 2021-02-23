@@ -27,9 +27,7 @@ public class SyntaxTree {
         nodeList = new ArrayList<>();
         itemTerminated = false;
         normalize();
-//        System.out.println(nodeList);
         shunt();
-//        System.out.println(nodeStack);
         buildTree();
     }
 

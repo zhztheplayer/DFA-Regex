@@ -27,7 +27,7 @@ public class RegexSearcher implements Enumeration<MatchedText> {
     private void compile(String regex) {
         SyntaxTree syntaxTree = new SyntaxTree(regex);
         NFA nfa = new NFA(syntaxTree.getRoot());
-        DFA dfa = new DFA(nfa.getStateList());
+        DFA dfa = new DFA(nfa.asImmutable());
         transitionTable = dfa.getTransitionTable();
         is = dfa.getInitState();
         fs = dfa.getFinalStates();
