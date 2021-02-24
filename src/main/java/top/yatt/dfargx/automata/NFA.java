@@ -43,8 +43,8 @@ public class NFA {
         }
     }
 
-    public NFAIStateManager asImmutable() {
-        return new NFAIStateManager(stateList);
+    public NFABitmapStateManager asBitmapStateManager() {
+        return new NFABitmapStateManager(stateList);
     }
 
     public void visit(LChar lChar) {

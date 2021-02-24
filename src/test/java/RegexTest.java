@@ -25,8 +25,8 @@ public class RegexTest {
         System.out.println("Syntax tree: ");
         TreePrinter.getInstance().printTree(root);
         NFA nfa = new NFA(root);
-        System.out.println("NFA has " + nfa.asImmutable().stateCount() + " states");
-        DFA dfa = new DFA(nfa.asImmutable());
+        System.out.println("NFA has " + nfa.asBitmapStateManager().stateCount() + " states");
+        DFA dfa = new DFA(nfa.asBitmapStateManager());
         System.out.println("DFA has " + dfa.getTransitionTable().length + " states");
         System.out.println("Costed " + (System.currentTimeMillis() - prev) + " ms to compile");
     }

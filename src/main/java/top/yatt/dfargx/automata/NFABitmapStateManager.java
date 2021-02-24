@@ -2,19 +2,19 @@ package top.yatt.dfargx.automata;
 
 import java.util.*;
 
-public class NFAIStateManager {
-    private final NFAIState[] iStates;
+public class NFABitmapStateManager {
+    private final NFABitmapState[] iStates;
 
-    public NFAIStateManager(List<NFAState> states) {
+    public NFABitmapStateManager(List<NFAState> states) {
         int stateCount = states.size();
-        this.iStates = new NFAIState[stateCount];
+        this.iStates = new NFABitmapState[stateCount];
         for (NFAState state : states) {
             int id = state.getId();
-            iStates[id] = new NFAIState(id, stateCount, this);
+            iStates[id] = new NFABitmapState(id, this);
         }
         for (NFAState state : states) {
             int id = state.getId();
-            NFAIState iState = iStates[id];
+            NFABitmapState iState = iStates[id];
             if (iState == null) {
                 throw new IllegalStateException();
             }
@@ -28,13 +28,16 @@ public class NFAIStateManager {
                 }
             }
         }
+        for (NFABitmapState iState : iStates) {
+            iState.freeze();
+        }
     }
 
-    public NFAIState getState(int id) {
+    public NFABitmapState getState(int id) {
         return iStates[id];
     }
 
-    public List<NFAIState> getStates() {
+    public List<NFABitmapState> getStates() {
         return Collections.unmodifiableList(Arrays.asList(iStates));
     }
 
@@ -42,7 +45,7 @@ public class NFAIStateManager {
         return iStates.length;
     }
 
-    public NFAIStatePack newEmptyPack() {
-        return new NFAIStatePack(this);
+    public NFABitmapStatePack newEmptyPack() {
+        return new NFABitmapStatePack(this);
     }
 }
