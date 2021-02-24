@@ -64,7 +64,7 @@ public class NFABitmapStatePack {
         int size = 0;
         for (long b : stateBitmap) {
             while (b != 0L) {
-                size += (b & 1L);
+                size += b & 1L;
                 b = b >> 1;
             }
         }

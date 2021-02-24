@@ -166,7 +166,7 @@ public class DFA {
     }
 
     private NFABitmapStatePack traceReachable(NFABitmapStatePack closure, char ch, Map<NFABitmapState, NFABitmapStatePack> closureMap) {
-        NFABitmapStatePack result = nfaiStateManager.newEmptyPack();;
+        NFABitmapStatePack result = nfaiStateManager.newEmptyPack();
         for (NFABitmapState closureState : closure.asList()) {
             Map<Character, NFABitmapStatePack> transitionMap = closureState.getTransitionMap();
             NFABitmapStatePack stateSet = transitionMap.get(ch);

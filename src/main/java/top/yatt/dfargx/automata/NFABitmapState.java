@@ -65,8 +65,12 @@ public class NFABitmapState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         NFABitmapState nfaiState = (NFABitmapState) o;
         return id == nfaiState.id;
     }
