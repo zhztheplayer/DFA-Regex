@@ -17,18 +17,18 @@ public class RegexTest {
     //"([ab]([^cd]*\\w+(abc|abcd){2,5})+)?.*"
     @Test
     public void testProcessing() {
-        final long pre = System.currentTimeMillis();
+        final long prev = System.currentTimeMillis();
         String regex = "(a*b|ab*)";
         SyntaxTree tree = new SyntaxTree(regex);
         Node root = tree.getRoot();
-        System.out.println("For regex: " + regex);
+        System.out.println("For RegEx: " + regex);
         System.out.println("Syntax tree: ");
         TreePrinter.getInstance().printTree(root);
         NFA nfa = new NFA(root);
-        System.out.println("NFA has " + nfa.getStateList().size() + " states");
-        DFA dfa = new DFA(nfa.getStateList());
+        System.out.println("NFA has " + nfa.asBitmapStateManager().stateCount() + " states");
+        DFA dfa = new DFA(nfa.asBitmapStateManager());
         System.out.println("DFA has " + dfa.getTransitionTable().length + " states");
-        System.out.println("Cost " + (System.currentTimeMillis() - pre) + " ms to compile");
+        System.out.println("Costed " + (System.currentTimeMillis() - prev) + " ms to compile");
     }
 
     @Test
@@ -67,10 +67,10 @@ public class RegexTest {
         long prev;
         prev = System.currentTimeMillis();
         final boolean expected = Pattern.compile(regex).matcher(str).matches();
-        System.out.println(System.currentTimeMillis() - prev);
+        System.out.println("JVM RegEx costs " + (System.currentTimeMillis() - prev) + "ms. ");
         prev = System.currentTimeMillis();
         boolean actual = new RegexMatcher(regex).match(str);
-        System.out.println(System.currentTimeMillis() - prev);
+        System.out.println("DFA RegEx costs " + (System.currentTimeMillis() - prev) + "ms. ");
         Assert.assertEquals(expected, actual);
     }
 

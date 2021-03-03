@@ -10,7 +10,7 @@ public class NFAStateFactory {
         nextID = 0;
     }
 
-    public NFAState create() {
+    public synchronized NFAState newState() {
         return new NFAState(nextID++);
     }
 }
