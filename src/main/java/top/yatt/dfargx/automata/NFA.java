@@ -30,7 +30,7 @@ public class NFA {
     }
 
     private NFAState newState() {
-        NFAState nfaState = stateFactory.create();
+        NFAState nfaState = stateFactory.newState();
         stateList.add(nfaState);
         return nfaState;
     }
@@ -43,8 +43,8 @@ public class NFA {
         }
     }
 
-    public List<NFAState> getStateList() {
-        return stateList;
+    public NFABitmapStateManager asBitmapStateManager() {
+        return new NFABitmapStateManager(stateList);
     }
 
     public void visit(LChar lChar) {

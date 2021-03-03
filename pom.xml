@@ -142,14 +142,6 @@
                         </sourceDirectory>
                     </sourceDirectories>
                 </configuration>
-                <dependencies>
-                    <!-- https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle -->
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>8.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

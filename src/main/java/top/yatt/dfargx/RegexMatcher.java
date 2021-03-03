@@ -20,7 +20,7 @@ public class RegexMatcher {
     private void compile(String regex) {
         SyntaxTree syntaxTree = new SyntaxTree(regex);
         NFA nfa = new NFA(syntaxTree.getRoot());
-        DFA dfa = new DFA(nfa.getStateList());
+        DFA dfa = new DFA(nfa.asBitmapStateManager());
         transitionTable = dfa.getTransitionTable();
         is = dfa.getInitState();
         fs = dfa.getFinalStates();
