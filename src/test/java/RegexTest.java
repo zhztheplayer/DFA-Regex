@@ -63,6 +63,22 @@ public class RegexTest {
         testFor(regex, str);
     }
 
+    private static String repeat(String str, int count) {
+        StringBuilder result = new StringBuilder(str.length() * count);
+        for (int i = 0; i < count; i++) {
+            result.append(str);
+        }
+        return result.toString();
+    }
+    
+    @Test
+    public void testRepetition() {
+        String regex = repeat("a?", 30) + repeat("a", 30);
+        String str = repeat("a", 30);
+        
+        testFor(regex, str);
+    }
+
     public void testFor(String regex, String str) {
         long prev;
         prev = System.currentTimeMillis();
