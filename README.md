@@ -7,7 +7,7 @@ A DFA regex engine in java.
 <dependency>
     <groupId>top.yatt.dfargx</groupId>
     <artifactId>dfargx</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 ```
 ### Introduction
