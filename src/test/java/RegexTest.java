@@ -36,7 +36,7 @@ public class RegexTest {
         String regex = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";
         String str = UUID.randomUUID().toString();
 
-        testFor(regex, str);
+        assertMatches(regex, str);
     }
 
     @Test
@@ -44,14 +44,14 @@ public class RegexTest {
         String regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
         String str = "192.168.0.255";
 
-        testFor(regex, str);
+        assertMatches(regex, str);
     }
 
     @Test
     public void testReDoS() {
         String regex = "(a*)*";
         String str1 = "aaaaaaaaaaaaaaaaab";
-        testFor(regex, str1);
+        assertMatches(regex, str1);
 
     }
 
@@ -60,10 +60,18 @@ public class RegexTest {
         String regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3} - - \\[[^\\]]+\\] \"[^\"]+\" \\d+ \\d+ \"[^\"]+\" \"[^\"]+\"";
         String str = "11.11.11.11 - - [25/Jan/2000:14:00:01 +0100] \"GET /1986.js HTTP/1.1\" 200 932 \"http://domain.com/index.html\" \"Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 GTB6\"";
 
-        testFor(regex, str);
+        assertMatches(regex, str);
     }
 
-    public void testFor(String regex, String str) {
+    @Test
+    public void testNULWithCaret() {
+        String regex = "[^x]";
+        String str = "\u0000";
+
+        assertMatches(regex, str);
+    }
+
+    public void assertMatches(String regex, String str) {
         long prev;
         prev = System.currentTimeMillis();
         final boolean expected = Pattern.compile(regex).matcher(str).matches();
