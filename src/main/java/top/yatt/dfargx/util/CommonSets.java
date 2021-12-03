@@ -1,6 +1,7 @@
 package top.yatt.dfargx.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,19 +71,27 @@ public class CommonSets {
     }
 
     public static char[] complementarySet(char[] set) { // complementary set among ascii
-        boolean[] book = emptyBook();
+        boolean[] book = emptyBook(true);
+        int cardinality = ENCODING_LENGTH; // number of unique chars
         for (char b : set) {
-            book[b] = true;
+            if (book[b]) {
+                cardinality--;
+                book[b] = false;
+            }
         }
-        return bookToSet(book, false);
+        return bookToSet(book, cardinality);
     }
 
     public static char[] minimum(char[] set) { // [e, a, d, f, f, c, c, k, \s] -> {a, c, d, e, f, k, \0, \t}
-        boolean[] book = emptyBook();
+        boolean[] book = emptyBook(false);
+        int cardinality = 0; // number of unique chars
         for (char b : set) {
-            book[b] = true;
+            if (!book[b]) {
+                cardinality++;
+                book[b] = true;
+            }
         }
-        return bookToSet(book, true);
+        return bookToSet(book, cardinality);
     }
 
     public static List<Character> interpretToken(String token) {
@@ -131,20 +140,17 @@ public class CommonSets {
         return result;
     }
 
-    private static boolean[] emptyBook() {
+    private static boolean[] emptyBook(boolean fill) {
         boolean[] book = new boolean[ENCODING_LENGTH];
-        for (int i = 0; i < book.length; i++) {
-            book[i] = false;
-        }
+        Arrays.fill(book, fill);
         return book;
     }
 
-    private static char[] bookToSet(boolean[] book, boolean persistedFlag) {
-        char[] newSet = new char[ENCODING_LENGTH];
+    private static char[] bookToSet(boolean[] book, int cardinality) {
+        char[] newSet = new char[cardinality];
         int i = 0;
         for (char j = 0; j < book.length; j++) {
-            boolean e = book[j];
-            if (e == persistedFlag) {
+            if (book[j]) {
                 newSet[i++] = j;
             }
         }
