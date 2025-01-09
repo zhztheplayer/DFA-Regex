@@ -15,7 +15,7 @@ A DFA regex engine in java.
 This is a Java DFA regex engine implementation.
 
 - High compatibility -- single jar lib, without 3rd dependencies
-- High performance -- O(n) liner time complex, can be used for avoiding [ReDoS](https://en.wikipedia.org/wiki/ReDoS)
+- High performance -- O(n) liner time complexity, can be used for avoiding [ReDoS](https://en.wikipedia.org/wiki/ReDoS)
 
 ### Use Case
 ```java
